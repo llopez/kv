@@ -40,7 +40,7 @@ defmodule KV.Registry do
     if Map.has_key?(names, name) do
       {:noreply, state}
     else
-      {:ok, bucket} = KV.Bucket.start_link([])
+      {:ok, bucket} = DynamicSupervisor.start_child(KV.BucketSupervisor, KV.Bucket)
       ref = Process.monitor(bucket)
       names = Map.put(names, name, bucket)
       refs = Map.put(refs, ref, name)
